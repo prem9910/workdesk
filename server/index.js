@@ -23,5 +23,5 @@ app.post('/api/activity', (req, res) => { actLog.unshift({ id: Date.now(), ...re
 
 app.get('/api/health', (_, res) => res.json({ status: 'ok' }));
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Work Desk API on port ${PORT} → Supabase connected`));
+// Export the Express app for Vercel Serverless Functions
+module.exports = app;
