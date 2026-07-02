@@ -134,6 +134,26 @@ export default function Settings() {
     }
   }
 
+  async function removeBrevoConfig() {
+    if (!window.confirm('Are you sure you want to remove the email configuration? Emails will stop working until you configure it again.')) return;
+    setBrevoLoading(true);
+    try {
+      const r = await fetch(`${SERVER}/api/email/config/remove`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (!r.ok) throw new Error();
+      setBrevoMsg('✅ Email configuration removed! Please restart the server.');
+      setBrevoMasked({ apiKey: '', senderEmail: '', senderName: '', configured: false });
+      setBrevoForm({ apiKey: '', senderEmail: '', senderName: '' });
+      await logAct('BREVO CONFIG REMOVED', '');
+    } catch {
+      setBrevoMsg('❌ Could not connect to the server.');
+    } finally {
+      setBrevoLoading(false);
+    }
+  }
+
   async function saveProfile() {
     const emp = employees.find(e => e.id === currentUser.empId);
     if (!emp) { setProfileMsg('❌ Employee record not found!'); return; }
@@ -475,6 +495,11 @@ export default function Settings() {
             <button onClick={saveEmailCfg} style={{ padding: '9px 20px', borderRadius: 8, background: 'transparent', color: '#0d7377', border: '1.5px solid #0d7377', cursor: 'pointer', fontWeight: 800, fontSize: 13 }}>
               💾 Save Organization Name
             </button>
+            {brevoMasked.configured && (
+              <button onClick={removeBrevoConfig} disabled={brevoLoading} style={{ padding: '9px 20px', borderRadius: 8, background: '#dc2626', color: 'white', border: 'none', cursor: brevoLoading ? 'not-allowed' : 'pointer', fontWeight: 800, fontSize: 13, opacity: brevoLoading ? 0.7 : 1 }}>
+                🗑️ Remove Config
+              </button>
+            )}
           </div>
         </Card>
 

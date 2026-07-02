@@ -45,6 +45,14 @@ router.post('/config', (req, res) => {
   res.json({ ok: true });
 });
 
+// POST /api/email/config/remove — clear Brevo configuration
+router.post('/config/remove', (req, res) => {
+  writeEnvKey('BREVO_API_KEY', '');
+  writeEnvKey('BREVO_SENDER_EMAIL', '');
+  writeEnvKey('BREVO_SENDER_NAME', '');
+  res.json({ ok: true });
+});
+
 function getClient() {
   return new BrevoClient({ apiKey: process.env.BREVO_API_KEY || '' });
 }
