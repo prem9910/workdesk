@@ -1,0 +1,29 @@
+# Environment files
+.env
+workdesk.db
+workdesk.db-shm
+workdesk.db-wal
+
+# Node modules
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Test coverage
+coverage/
+
+# Build output
+dist/
+build/
