@@ -95,7 +95,8 @@ export default function Settings() {
   const [emailMsg, setEmailMsg] = useState('');
 
   // Brevo config state
-  const SERVER = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
+  // Use relative paths for API calls - works on both localhost and deployed sites
+  const SERVER = ''; // Empty string means relative to current domain
   const [brevoForm, setBrevoForm] = useState({ apiKey: '', senderEmail: '', senderName: '' });
   const [brevoMasked, setBrevoMasked] = useState({ apiKey: '', senderEmail: '', senderName: '', configured: false });
   const [brevoMsg, setBrevoMsg] = useState('');

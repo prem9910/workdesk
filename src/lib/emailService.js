@@ -8,7 +8,9 @@ import {
   buildHandoverResponseHtml,
 } from './emailTemplates';
 
-const SERVER = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
+// Use relative path for API calls - works on both localhost and deployed sites
+// On Vercel, API routes are at /api/* which are proxied to the server
+const SERVER = ''; // Empty string means relative to current domain
 
 // Read the email config. The settings page writes it as `workdesk-email`; an
 // older version of this service used the `workdesk-emailcfg` key which left a
