@@ -1,13 +1,17 @@
 // Vercel Serverless Function entry point
 // This file is the entry point for Vercel Serverless Functions
-// It imports the Express app from server/index.js and creates a handler for Vercel
 
 const app = require('../server/index.js');
 
-// Create a handler function for Vercel Serverless Functions
-// This wraps the Express app to work with Vercel's serverless environment
+// Export the Express app wrapped for Vercel Serverless Functions
+// Vercel expects a function that handles (req, res)
 module.exports = (req, res) => {
-  // Remove the /api prefix from the path for the Express app
-  req.url = req.url.replace(/^\/api/, '');
+  // Remove /api prefix from URL before passing to Express
+  const originalUrl = req.url;
+  req.url = originalUrl.replace(/^\/api/, '');
+
+  // Also update the path for Express router to work correctly
+  if (req.url === '') req.url = '/';
+
   return app(req, res);
 };
