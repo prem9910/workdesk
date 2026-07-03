@@ -14,6 +14,7 @@
     "@hookform/resolvers": "^5.4.0",
     "@supabase/supabase-js": "^2.108.2",
     "@tanstack/react-query": "^5.101.1",
+    "@vercel/node": "^3.0.21",
     "date-fns": "^4.4.0",
     "framer-motion": "^12.41.0",
     "lucide-react": "^1.21.0",
