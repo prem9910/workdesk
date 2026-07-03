@@ -217,6 +217,19 @@ CREATE TABLE IF NOT EXISTS email_config (
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- RLS policies for email_config - allow service role full access (bypasses RLS),
+-- and anon role read access for configuration checks
+ALTER TABLE email_config ENABLE ROW LEVEL SECURITY;
+
+-- Allow authenticated users to read email config (for frontend checks)
+CREATE POLICY "Allow anon read email config" ON email_config
+  FOR SELECT TO anon USING (true);
+
+-- Allow service role full access (insert/update/delete) - bypasses RLS anyway
+-- but explicit policy ensures clarity
+CREATE POLICY "Allow service role full access email config" ON email_config
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+
 -- ============================================================
 -- ROW LEVEL SECURITY (RLS) POLICIES
 -- App uses the ANON key (public) from the browser.

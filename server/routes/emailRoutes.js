@@ -187,22 +187,52 @@ router.post('/send', async (req, res) => {
   const apiKey = config.apiKey;
 
   if (!apiKey || apiKey === 'your_brevo_api_key_here') {
-    return res.status(503).json({ error: 'Brevo API key not configured' });
+    console.error('[Brevo] API key not configured. Config:', { 
+      hasApiKey: !!config.apiKey, 
+      hasSenderEmail: !!config.senderEmail,
+      senderName: config.senderName 
+    });
+    return res.status(503).json({ error: 'Brevo API key not configured. Please configure email settings in Admin panel.' });
+  }
+
+  if (!config.senderEmail) {
+    console.error('[Brevo] Sender email not configured');
+    return res.status(503).json({ error: 'Sender email not configured. Please configure email settings in Admin panel.' });
   }
 
   try {
     const brevo = new BrevoClient({ apiKey });
-    await brevo.transactionalEmails.sendTransacEmail({
-      sender:      { email: config.senderEmail, name: config.senderName },
+    const result = await brevo.transactionalEmails.sendTransacEmail({
+      sender:      { email: config.senderEmail, name: config.senderName || 'Work Desk' },
       to:          [{ email: to_email, name: to_name || to_email }],
       subject,
       htmlContent: message_html,
     });
-    res.json({ ok: true });
+    console.log('[Brevo] Email sent successfully to:', to_email, 'messageId:', result.messageId);
+    res.json({ ok: true, messageId: result.messageId });
   } catch (err) {
     const msg = err?.response?.body?.message || err?.message || 'Unknown error';
-    console.error('[Brevo] send error:', msg);
+    console.error('[Brevo] send error:', msg, 'status:', err?.response?.status, 'details:', err?.response?.body);
     res.status(500).json({ error: msg });
+  }
+});
+
+// GET /api/email/test-config - test if email config is valid
+router.get('/test-config', async (req, res) => {
+  try {
+    const config = await getConfig();
+    const isValid = config.apiKey && config.apiKey !== 'your_brevo_api_key_here' && config.senderEmail;
+    
+    res.json({
+      configured: isValid,
+      hasApiKey: !!config.apiKey,
+      hasSenderEmail: !!config.senderEmail,
+      senderName: config.senderName || 'Work Desk',
+      source: config.apiKey ? 'supabase' : 'env'
+    });
+  } catch (err) {
+    console.error('[Email] test-config error:', err.message);
+    res.status(500).json({ error: err.message, configured: false });
   }
 });
 
