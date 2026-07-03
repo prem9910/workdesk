@@ -6,12 +6,19 @@ const path          = require('path');
 const supabase      = require('../supabase');
 
 const ENV_PATH = path.join(__dirname, '../.env');
+const IS_VERCEL = !!process.env.VERCEL;
 
 function readEnv() {
   try { return fs.readFileSync(ENV_PATH, 'utf8'); } catch { return ''; }
 }
 
 function writeEnvKey(key, value) {
+  // Skip filesystem writes on Vercel (read-only filesystem)
+  if (IS_VERCEL) {
+    process.env[key] = value;
+    return;
+  }
+  
   let content = readEnv();
   const regex = new RegExp(`^${key}=.*$`, 'm');
   if (regex.test(content)) {
