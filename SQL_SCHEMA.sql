@@ -208,6 +208,15 @@ CREATE TABLE IF NOT EXISTS workdesk_notices (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- ─── EMAIL CONFIG ────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS email_config (
+  id SERIAL PRIMARY KEY,
+  brevo_api_key TEXT DEFAULT '',
+  brevo_sender_email TEXT DEFAULT '',
+  brevo_sender_name TEXT DEFAULT '',
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
 -- ============================================================
 -- ROW LEVEL SECURITY (RLS) POLICIES
 -- App uses the ANON key (public) from the browser.
@@ -230,6 +239,7 @@ ALTER TABLE workdesk_activity_log   ENABLE ROW LEVEL SECURITY;
 ALTER TABLE workdesk_trash          ENABLE ROW LEVEL SECURITY;
 ALTER TABLE workdesk_user_links     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE workdesk_notices        ENABLE ROW LEVEL SECURITY;
+ALTER TABLE email_config            ENABLE ROW LEVEL SECURITY;
 
 -- ============================================================
 -- DATA MIGRATION — copy rows from legacy tables, then drop them.
