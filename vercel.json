@@ -1,20 +1,25 @@
 {
   "version": 2,
-  "builds": [
+  "buildCommand": "npm run build",
+  "installCommand": "npm install && cd server && npm install",
+  "outputDirectory": "dist",
+  "rewrites": [
     {
-      "src": "server/index.js",
-      "use": "@vercel/node",
-      "config": { "zeroConfig": true }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "server/index.js"
+      "source": "/api/(.*)",
+      "destination": "server/index.js"
     },
     {
-      "src": "/(.*)",
-      "dest": "dist/index.html"
+      "source": "/(.*)",
+      "destination": "/dist/index.html"
     }
-  ]
+  ],
+  "serverless": {
+    "enabled": true,
+    "functions": {
+      "server/index.js": {
+        "memory": 3008,
+        "maxDuration": 10
+      }
+    }
+  }
 }
