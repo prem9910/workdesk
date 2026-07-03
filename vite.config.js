@@ -7,7 +7,10 @@ export default defineConfig({
   server: {
     port: process.env.PORT ? parseInt(process.env.PORT) : undefined,
     proxy: {
-      '/api': 'http://localhost:3001'
+      '/api': {
+        target: 'http://localhost:3001',
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      }
     }
   }
 })
