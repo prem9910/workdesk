@@ -15,11 +15,12 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "server/index.js"
+      "dest": "server/index.js",
+      "headers": { "Access-Control-Allow-Origin": "*" }
     },
     {
       "src": "/(.*)",
-      "destination": "dist/index.html"
+      "dest": "dist/index.html"
     }
   ]
 }
